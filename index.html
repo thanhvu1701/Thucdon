@@ -8,222 +8,219 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 30px 10px;
-      margin: 0;
-      min-height: 100vh;
+      padding: 30px;
       background-image: url('https://cdn.tgdd.vn/2021/06/CookProduct/BeFunky-collage-1200x676-2.jpg');
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
       color: white;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      position: relative;
-    }
-
-    /* lớp nền đen mờ giúp chữ dễ nhìn */
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: -1;
     }
 
     h1 {
       background-color: rgba(0, 0, 0, 0.6);
-      padding: 10px 20px;
+      padding: 10px;
       border-radius: 10px;
+      display: inline-block;
       margin-bottom: 20px;
-      user-select: none;
     }
 
     button {
       font-size: 18px;
       padding: 10px 20px;
-      margin: 10px;
+      margin: 10px 15px;
       border: none;
       border-radius: 8px;
       background-color: #ff9800;
       color: white;
       cursor: pointer;
-      min-width: 130px;
-      user-select: none;
-      touch-action: manipulation;
+      min-width: 120px;
     }
 
-    button:hover,
-    button:focus {
+    button:hover {
       background-color: #f57c00;
-      outline: none;
     }
 
     .result {
       font-size: 20px;
-      margin-top: 15px;
+      margin-top: 10px;
       background-color: rgba(0, 0, 0, 0.5);
       display: inline-block;
       padding: 10px 20px;
       border-radius: 10px;
       min-width: 280px;
-      min-height: 48px;
-      user-select: text;
-      word-wrap: break-word;
+      min-height: 40px;
+    }
+
+    .controls {
+      margin-top: 15px;
     }
 
     #history {
       margin-top: 30px;
-      max-width: 90vw;
-      background-color: rgba(0,0,0,0.4);
+      background-color: rgba(0,0,0,0.5);
+      max-width: 450px;
+      margin-left: auto;
+      margin-right: auto;
       padding: 15px;
       border-radius: 10px;
       text-align: left;
       max-height: 200px;
       overflow-y: auto;
-      user-select: text;
       font-size: 16px;
     }
 
-    #refresh-btn {
+    #reset-btn {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      font-size: 14px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      background-color: #555;
+      bottom: 10px;
+      right: 10px;
+      font-size: 12px;
+      padding: 6px 12px;
+      background-color: #444;
       color: white;
+      border-radius: 6px;
       cursor: pointer;
-      opacity: 0.9;
-      border: none;
-      user-select: none;
-      touch-action: manipulation;
-      z-index: 10;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      z-index: 999;
     }
-    #refresh-btn:hover,
-    #refresh-btn:focus {
+
+    #reset-btn:hover {
       opacity: 1;
-      background-color: #333;
-      outline: none;
     }
+
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
+
   <h1>🎯 Vòng quay món ăn 🎯</h1>
 
   <div>
-    <button id="btn-man">Món mặn</button>
-    <div id="result-mặn" class="result"></div>
+    <button onclick="spin('mặn')">Món mặn</button>
+    <div id="result-mặn" class="result">Chưa chọn</div>
   </div>
 
   <div>
-    <button id="btn-canh">Món canh</button>
-    <div id="result-canh" class="result"></div>
+    <button onclick="spin('canh')">Món canh</button>
+    <div id="result-canh" class="result">Chưa chọn</div>
+  </div>
+
+  <div class="controls">
+    <button id="save-btn" onclick="saveMenu()">💾 Lưu thực đơn cho ngày mai</button>
   </div>
 
   <div id="history">
-    <h3>Lịch sử quay</h3>
-    <ul id="history-list" style="padding-left: 20px;"></ul>
+    <strong>Lịch sử chọn món:</strong>
+    <div id="history-list"></div>
   </div>
 
-  <button id="refresh-btn">Làm mới</button>
+  <button id="reset-btn" onclick="resetAll()">Làm mới</button>
 
-  <script>
-    // Dữ liệu món ăn
-    const data = {
-      "mặn": [
-        "Đậu phụ sốt cà chua",
-        "Đậu phụ nhồi thịt băm hấp hoặc sốt",
-        "Đậu phụ kho nấm đông cô",
-        "Đậu phụ chiên giòn chấm nước tương",
-        "Đậu phụ rim mặn ngọt",
-        "Đậu phụ xào nấm và hành lá",
-        "Thịt băm xào nấm hương",
-        "Nấm đùi gà xào thịt băm",
-        "Nấm kho tiêu với thịt băm",
-        "Trứng hấp thịt băm và nấm",
-        "Nấm xào bơ tỏi",
-        "Thịt băm rang sả ớt",
-        "Thịt băm rim nước mắm tỏi",
-        "Trứng chiên thịt băm",
-        "Thịt băm xào đậu que",
-        "Thịt băm xào su su / cà rốt",
-        "Bầu nhồi thịt băm sốt nước tương",
-        "Ruốc nấm"
-      ],
-      "canh": [
-        "Canh nấm rơm nấu thịt băm",
-        "Canh nấm kim châm thịt băm",
-        "Canh bí đỏ thịt băm",
-        "Canh cải bó xôi nấu thịt băm",
-        "Canh cải ngọt thịt băm",
-        "Canh cải thảo thịt băm",
-        "Canh mồng tơi nấu tôm khô (hoặc thịt băm)",
-        "Canh rong biển thịt băm và đậu phụ",
-        "Canh bí xanh nhồi thịt băm",
-        "Canh đậu phụ non và thịt băm",
-        "Canh củ cải trắng nấu thịt băm",
-        "Canh nấm đùi gà nấu rau cải"
-      ]
-    };
+<script>
+  const data = {
+    "mặn": [
+      "Đậu phụ sốt cà chua",
+      "Đậu phụ nhồi thịt băm hấp hoặc sốt",
+      "Đậu phụ kho nấm đông cô",
+      "Đậu phụ chiên giòn chấm nước tương",
+      "Đậu phụ rim mặn ngọt",
+      "Đậu phụ xào nấm và hành lá",
+      "Thịt băm xào nấm hương",
+      "Nấm đùi gà xào thịt băm",
+      "Nấm kho tiêu với thịt băm",
+      "Trứng hấp thịt băm và nấm",
+      "Nấm xào bơ tỏi (ăn chay hoặc ăn kèm món mặn khác)",
+      "Thịt băm rang sả ớt",
+      "Thịt băm rim nước mắm tỏi",
+      "Trứng chiên thịt băm",
+      "Thịt băm xào đậu que",
+      "Thịt băm xào su su / cà rốt",
+      "Bầu nhồi thịt băm sốt nước tương",
+      "Ruốc nấm"
+    ],
+    "canh": [
+      "Canh nấm rơm nấu thịt băm",
+      "Canh nấm kim châm thịt băm",
+      "Canh bí đỏ thịt băm",
+      "Canh cải bó xôi nấu thịt băm",
+      "Canh cải ngọt thịt băm",
+      "Canh cải thảo thịt băm",
+      "Canh mồng tơi nấu tôm khô (hoặc thịt băm)",
+      "Canh rong biển thịt băm và đậu phụ",
+      "Canh bí xanh nhồi thịt băm",
+      "Canh đậu phụ non và thịt băm",
+      "Canh củ cải trắng nấu thịt băm",
+      "Canh nấm đùi gà nấu rau cải"
+    ]
+  };
 
-    // Bản sao để thay đổi khi quay
-    let availableData = {
-      "mặn": [...data["mặn"]],
-      "canh": [...data["canh"]]
-    };
+  let selected = {
+    "mặn": null,
+    "canh": null
+  };
 
-    const resultMan = document.getElementById("result-mặn");
-    const resultCanh = document.getElementById("result-canh");
+  // Đếm ngày đã lưu, bắt đầu từ 1
+  let dayOffset = 1;
+
+  function spin(type) {
+    const items = data[type];
+    if (items.length === 0) {
+      alert("Đã chọn hết món " + type + " rồi!");
+      return;
+    }
+    const idx = Math.floor(Math.random() * items.length);
+    const result = items[idx];
+    selected[type] = result;
+    document.getElementById("result-" + type).innerText = "👉 " + result;
+  }
+
+  function saveMenu() {
+    if (!selected["mặn"] || !selected["canh"]) {
+      alert("Vui lòng chọn cả món mặn và món canh trước khi lưu.");
+      return;
+    }
+    const today = new Date();
+    // Tính ngày + offset
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() + dayOffset);
+
+    // Định dạng ngày dd/mm/yyyy
+    const dd = String(targetDate.getDate()).padStart(2, '0');
+    const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const yyyy = targetDate.getFullYear();
+    const formattedDate = `${dd}/${mm}/${yyyy}`;
+
+    const text = `Em Mia Iu chọn món: ${selected["mặn"]}, ${selected["canh"]} cho ngày ${formattedDate}`;
     const historyList = document.getElementById("history-list");
 
-    // Hàm quay món ăn
-    function spin(type) {
-      if (availableData[type].length === 0) {
-        alert(`Không còn món ${type} để quay! Vui lòng làm mới.`);
-        return;
-      }
-      const idx = Math.floor(Math.random() * availableData[type].length);
-      const choice = availableData[type][idx];
+    // Thêm vào lịch sử
+    const p = document.createElement("p");
+    p.innerText = text;
+    historyList.appendChild(p);
 
-      // Hiển thị kết quả
-      if(type === "mặn") {
-        resultMan.textContent = "👉 " + choice;
-      } else {
-        resultCanh.textContent = "👉 " + choice;
-      }
+    // Tăng ngày offset lên 1 cho lần tiếp theo
+    dayOffset++;
 
-      // Loại món đã chọn ra khỏi danh sách tạm
-      availableData[type].splice(idx, 1);
+    // Reset chọn món để chọn món tiếp
+    selected["mặn"] = null;
+    selected["canh"] = null;
+    document.getElementById("result-mặn").innerText = "Chưa chọn";
+    document.getElementById("result-canh").innerText = "Chưa chọn";
+  }
 
-      // Ngày hôm nay + 1
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const dateString = tomorrow.toLocaleDateString('vi-VN');
+  function resetAll() {
+    // Reset ngày offset, xóa lịch sử, reset chọn món
+    dayOffset = 1;
+    selected["mặn"] = null;
+    selected["canh"] = null;
+    document.getElementById("result-mặn").innerText = "Chưa chọn";
+    document.getElementById("result-canh").innerText = "Chưa chọn";
+    document.getElementById("history-list").innerHTML = "";
+  }
+</script>
 
-      // Thêm lịch sử
-      const li = document.createElement("li");
-      li.textContent = `Thực đơn cho ngày mai (${dateString}): ${choice}`;
-      historyList.appendChild(li);
-    }
-
-    // Hàm làm mới
-    function refresh() {
-      availableData = {
-        "mặn": [...data["mặn"]],
-        "canh": [...data["canh"]]
-      };
-      resultMan.textContent = "";
-      resultCanh.textContent = "";
-      historyList.innerHTML = "";
-    }
-
-    // Gắn sự kiện cho nút
-    document.getElementById("btn-man").addEventListener("click", () => spin("mặn"));
-    document.getElementById("btn-canh").addEventListener("click", () => spin("canh"));
-    document.getElementById("refresh-btn").addEventListener("click", refresh);
-  </script>
 </body>
 </html>
