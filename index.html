@@ -8,205 +8,176 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 30px;
+      padding: 30px 15px 60px 15px;
       background-image: url('https://cdn.tgdd.vn/2021/06/CookProduct/BeFunky-collage-1200x676-2.jpg');
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
       color: white;
       min-height: 100vh;
-      margin: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
+      align-items: center;
     }
     h1 {
       background-color: rgba(0, 0, 0, 0.6);
-      padding: 10px;
+      padding: 10px 20px;
       border-radius: 10px;
       display: inline-block;
+      margin-bottom: 20px;
+      user-select: none;
     }
     button {
       font-size: 18px;
       padding: 10px 20px;
-      margin: 10px;
+      margin: 10px 15px;
       border: none;
       border-radius: 8px;
       background-color: #ff9800;
       color: white;
       cursor: pointer;
+      user-select: none;
       min-width: 120px;
+      transition: background-color 0.3s ease;
     }
     button:hover {
       background-color: #f57c00;
     }
     .result {
-      font-size: 24px;
-      margin-top: 20px;
+      font-size: 22px;
+      margin-top: 10px;
       background-color: rgba(0, 0, 0, 0.5);
       display: inline-block;
-      padding: 10px 20px;
+      padding: 12px 25px;
       border-radius: 10px;
-      min-width: 280px;
-      min-height: 40px;
-      line-height: 40px;
+      min-width: 260px;
+      min-height: 50px;
+      user-select: text;
+    }
+    #buttons {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     #history {
-      max-width: 600px;
-      margin: 30px auto 0;
-      background-color: rgba(0,0,0,0.5);
-      padding: 15px;
+      margin-top: 30px;
+      max-width: 480px;
+      background-color: rgba(0,0,0,0.6);
       border-radius: 10px;
+      padding: 15px 20px;
       text-align: left;
-      color: #fff;
+      font-size: 16px;
+      max-height: 300px;
       overflow-y: auto;
-      max-height: 200px;
+      user-select: text;
+      width: 100%;
     }
-    #history ul {
-      padding-left: 20px;
+    #history h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #historyList {
+      list-style: none;
+      padding-left: 0;
       margin: 0;
     }
-    #refreshBtn {
+    #historyList li {
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    #btnReset {
       position: fixed;
-      bottom: 15px;
-      right: 15px;
-      background-color: #555;
+      bottom: 12px;
+      right: 12px;
       font-size: 14px;
-      padding: 6px 10px;
-      border-radius: 5px;
-      min-width: auto;
-      opacity: 0.7;
-      transition: opacity 0.3s;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid #fff3cd;
+      user-select: none;
     }
-    #refreshBtn:hover {
-      opacity: 1;
+    #btnReset:hover {
+      background-color: rgba(255, 255, 255, 0.35);
     }
-    #saveBtn {
-      background-color: #4caf50;
-      min-width: 140px;
-    }
-    #saveBtn:hover {
-      background-color: #388e3c;
-    }
-    @media (max-width: 480px) {
-      .result {
-        min-width: 90vw;
-        font-size: 20px;
-      }
+    @media (max-width: 400px) {
       button {
-        min-width: 90vw;
-        font-size: 20px;
+        min-width: 100px;
+        font-size: 16px;
+        padding: 8px 15px;
       }
-      #history {
-        max-width: 90vw;
+      .result {
+        min-width: 200px;
+        font-size: 18px;
+        padding: 10px 15px;
       }
     }
   </style>
 </head>
 <body>
-  <h1>🎯 Vòng quay món ăn 🎯</h1>
+  <h1>🎯 Bữa trưa vui vẻ của em Lu 🎯</h1>
 
-  <div>
-    <button onclick="spin('mặn')">Món mặn</button>
-    <div id="result-mặn" class="result"></div>
+  <div id="buttons">
+    <div>
+      <button id="btnMonMan">Món mặn</button>
+      <div id="result-man" class="result"></div>
+    </div>
+    <div>
+      <button id="btnMonCanh">Món canh</button>
+      <div id="result-canh" class="result"></div>
+    </div>
   </div>
 
-  <div>
-    <button onclick="spin('canh')">Món canh</button>
-    <div id="result-canh" class="result"></div>
-  </div>
-
-  <div>
-    <button id="saveBtn" onclick="saveMenu()">Lưu thực đơn cho ngày mai</button>
-  </div>
+  <button id="btnSave" style="margin-top:15px; min-width: 140px;">Lưu thực đơn cho ngày mai</button>
 
   <div id="history">
-    <h3>Lịch sử thực đơn đã lưu</h3>
+    <h2>Lịch sử thực đơn đã lưu</h2>
     <ul id="historyList">
       <li>Chưa có thực đơn nào được lưu.</li>
     </ul>
   </div>
 
-  <button id="refreshBtn" onclick="resetAll()">Làm mới</button>
+  <button id="btnReset" title="Làm mới (xóa lịch sử)">Làm mới</button>
 
   <script>
     const data = {
       "mặn": [
-        "Đậu phụ sốt cà chua",
-        "Đậu phụ nhồi thịt băm hấp hoặc sốt",
-        "Đậu phụ kho nấm đông cô",
-        "Đậu phụ chiên giòn chấm nước tương",
-        "Đậu phụ rim mặn ngọt",
-        "Đậu phụ xào nấm và hành lá",
-        "Thịt băm xào nấm hương",
-        "Nấm đùi gà xào thịt băm",
-        "Nấm kho tiêu với thịt băm",
-        "Trứng hấp thịt băm và nấm",
-        "Nấm xào bơ tỏi",
-        "Thịt băm rang sả ớt",
-        "Thịt băm rim nước mắm tỏi",
-        "Trứng chiên thịt băm",
-        "Thịt băm xào đậu que",
-        "Thịt băm xào su su / cà rốt",
-        "Bầu nhồi thịt băm sốt nước tương",
-        "Ruốc nấm"
+        "Đậu phụ sốt cà chua", "Đậu phụ nhồi thịt băm", "Thịt băm xào nấm",
+        "Trứng chiên thịt", "Đậu phụ rim mặn ngọt", "Thịt băm rang sả",
+        "Trứng hấp thịt", "Thịt băm kho tiêu", "Nấm xào bơ tỏi"
       ],
       "canh": [
-        "Canh nấm rơm nấu thịt băm",
-        "Canh nấm kim châm thịt băm",
-        "Canh bí đỏ thịt băm",
-        "Canh cải bó xôi nấu thịt băm",
-        "Canh cải ngọt thịt băm",
-        "Canh cải thảo thịt băm",
-        "Canh mồng tơi nấu tôm khô (hoặc thịt băm)",
-        "Canh rong biển thịt băm và đậu phụ",
-        "Canh bí xanh nhồi thịt băm",
-        "Canh đậu phụ non và thịt băm",
-        "Canh củ cải trắng nấu thịt băm",
-        "Canh nấm đùi gà nấu rau cải"
+        "Canh cải bó xôi thịt băm", "Canh bí đỏ thịt băm", "Canh cải thảo nấm",
+        "Canh rong biển", "Canh nấm đùi gà", "Canh mồng tơi", "Canh đậu phụ non"
       ]
     };
 
-    let selected = { "mặn": undefined, "canh": undefined };
-    let filteredData = { "mặn": [...data["mặn"]], "canh": [...data["canh"]] };
-    let baseDate = null; // ngày bắt đầu lưu lịch sử
+    let selectedMonMan = null;
+    let selectedMonCanh = null;
 
-    function spin(type) {
-      if (filteredData[type].length === 0) {
-        alert(`Không còn món ${type} để quay!`);
-        return;
-      }
-      const items = filteredData[type];
-      const result = items[Math.floor(Math.random() * items.length)];
-      selected[type] = result;
-      document.getElementById("result-" + type).innerText = "👉 " + result;
+    const loadHistory = () => JSON.parse(localStorage.getItem('thucDonHistory') || '[]');
 
-      // Loại bỏ món vừa chọn khỏi danh sách để không chọn lại
-      filteredData[type] = filteredData[type].filter(i => i !== result);
-    }
+    const saveHistory = (history) => localStorage.setItem('thucDonHistory', JSON.stringify(history));
 
-    function formatDateWithWeekday(dateString) {
-      const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
-      const d = new Date(dateString);
-      const weekday = days[d.getDay()];
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
-      return `${weekday}, ${day}/${month}/${year}`;
-    }
+    const getNextDate = () => {
+      const today = new Date();
+      const offset = loadHistory().length + 1;
+      today.setDate(today.getDate() + offset);
+      return today.toISOString().split('T')[0];
+    };
 
-    function loadHistory() {
-      const raw = localStorage.getItem("menuHistory");
-      return raw ? JSON.parse(raw) : [];
-    }
+    const formatDate = (d) => {
+      const date = new Date(d);
+      const weekdays = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+      return `${weekdays[date.getDay()]} ngày ${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()}`;
+    };
 
-    function saveHistory(history) {
-      localStorage.setItem("menuHistory", JSON.stringify(history));
-    }
-
-    function renderHistory() {
-      const history = loadHistory();
+    const renderHistory = () => {
       const ul = document.getElementById("historyList");
+      const history = loadHistory();
       ul.innerHTML = "";
       if (history.length === 0) {
         ul.innerHTML = "<li>Chưa có thực đơn nào được lưu.</li>";
@@ -215,68 +186,54 @@
       history.forEach(item => {
         if (!item.monMan || !item.monCanh) return;
         const li = document.createElement("li");
-        li.textContent = `${formatDateWithWeekday(item.date)} - Em Mia Iu chọn món: Món mặn: ${item.monMan}; Món canh: ${item.monCanh}`;
+        li.textContent = `${formatDate(item.date)} - Em Mia Iu chọn món: Món mặn: ${item.monMan}; Món canh: ${item.monCanh}`;
         ul.appendChild(li);
       });
-    }
+    };
 
-    function saveMenu() {
-      if (!selected["mặn"] || !selected["canh"]) {
-        alert("Vui lòng chọn cả món mặn và món canh trước khi lưu!");
-        return;
-      }
-      let history = loadHistory();
-
-      // Nếu chưa có lịch sử, lấy ngày hiện tại +1 ngày, ngược lại lấy ngày lớn nhất +1
-      if (!baseDate) {
-        const now = new Date();
-        baseDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-      } else {
-        baseDate = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + 1);
-      }
-
-      const dateStr = baseDate.toISOString().slice(0, 10);
-
-      history.push({
-        date: dateStr,
-        monMan: selected["mặn"],
-        monCanh: selected["canh"]
-      });
-
-      saveHistory(history);
-
-      // Reset danh sách món quay lại đủ để chọn tiếp
-      filteredData = { "mặn": [...data["mặn"]], "canh": [...data["canh"]] };
-      selected = { "mặn": undefined, "canh": undefined };
-      document.getElementById("result-mặn").innerText = "";
-      document.getElementById("result-canh").innerText = "";
-
-      renderHistory();
-      alert("Đã lưu thực đơn cho " + formatDateWithWeekday(dateStr));
-    }
-
-    function resetAll() {
-      if (confirm("Bạn có chắc muốn làm mới và xóa lịch sử?")) {
-        localStorage.removeItem("menuHistory");
-        filteredData = { "mặn": [...data["mặn"]], "canh": [...data["canh"]] };
-        selected = { "mặn": undefined, "canh": undefined };
-        baseDate = null;
-        document.getElementById("result-mặn").innerText = "";
-        document.getElementById("result-canh").innerText = "";
-        renderHistory();
-      }
-    }
-
-    window.onload = function () {
-      renderHistory();
-
-      // Thiết lập baseDate theo lịch sử để không bị reset ngày
+    const spin = (type) => {
+      const allItems = data[type];
       const history = loadHistory();
-      if (history.length > 0) {
-        const lastDate = history[history.length - 1].date;
-        baseDate = new Date(lastDate);
+      const used = history.map(h => h[type === 'mặn' ? 'monMan' : 'monCanh']);
+      const available = allItems.filter(x => !used.includes(x));
+      const chosen = available[Math.floor(Math.random() * available.length)];
+      if (type === "mặn") {
+        selectedMonMan = chosen;
+        document.getElementById("result-man").textContent = chosen;
+      } else {
+        selectedMonCanh = chosen;
+        document.getElementById("result-canh").textContent = chosen;
       }
     };
+
+    const saveMenu = () => {
+      if (!selectedMonMan || !selectedMonCanh) {
+        alert("Vui lòng chọn cả món mặn và món canh trước khi lưu.");
+        return;
+      }
+      const history = loadHistory();
+      history.push({ date: getNextDate(), monMan: selectedMonMan, monCanh: selectedMonCanh });
+      saveHistory(history);
+      selectedMonMan = null;
+      selectedMonCanh = null;
+      document.getElementById("result-man").textContent = "";
+      document.getElementById("result-canh").textContent = "";
+      renderHistory();
+    };
+
+    const reset = () => {
+      if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử?")) {
+        localStorage.removeItem('thucDonHistory');
+        renderHistory();
+      }
+    };
+
+    document.getElementById("btnMonMan").onclick = () => spin("mặn");
+    document.getElementById("btnMonCanh").onclick = () => spin("canh");
+    document.getElementById("btnSave").onclick = saveMenu;
+    document.getElementById("btnReset").onclick = reset;
+
+    renderHistory();
   </script>
 </body>
 </html>
