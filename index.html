@@ -1,40 +1,30 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>Vòng quay món ăn</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
+    body {
       font-family: Arial, sans-serif;
       text-align: center;
-      height: 100%;
+      padding: 30px;
       background-image: url('https://cdn.tgdd.vn/2021/06/CookProduct/BeFunky-collage-1200x676-2.jpg');
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
       color: white;
-    }
-
-    .container {
-      padding: 30px 20px;
-      background-color: rgba(0, 0, 0, 0.5);
       min-height: 100vh;
-      box-sizing: border-box;
+      margin: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
     }
 
     h1 {
       background-color: rgba(0, 0, 0, 0.6);
-      padding: 10px 20px;
+      padding: 10px;
       border-radius: 10px;
-      font-size: 28px;
-      margin-bottom: 30px;
+      display: inline-block;
     }
 
     button {
@@ -46,6 +36,7 @@
       background-color: #ff9800;
       color: white;
       cursor: pointer;
+      min-width: 120px;
     }
 
     button:hover {
@@ -53,29 +44,66 @@
     }
 
     .result {
-      font-size: 20px;
-      margin-top: 10px;
+      font-size: 24px;
+      margin-top: 20px;
       background-color: rgba(0, 0, 0, 0.5);
       display: inline-block;
       padding: 10px 20px;
       border-radius: 10px;
+      min-width: 300px;
+    }
+
+    #history {
+      margin-top: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: rgba(0,0,0,0.4);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: left;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    #refresh-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background-color: #555;
+      color: white;
+      cursor: pointer;
+      opacity: 0.7;
+      border: none;
+    }
+    #refresh-btn:hover {
+      opacity: 1;
+      background-color: #333;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎯 Vòng quay món ăn 🎯</h1>
+  <h1>🎯 Vòng quay món ăn 🎯</h1>
 
-    <div>
-      <button onclick="spin('mặn')">Món mặn</button>
-      <div id="result-mặn" class="result"></div>
-    </div>
-
-    <div>
-      <button onclick="spin('canh')">Món canh</button>
-      <div id="result-canh" class="result"></div>
-    </div>
+  <div>
+    <button onclick="spin('mặn')">Món mặn</button>
+    <div id="result-mặn" class="result"></div>
   </div>
+
+  <div>
+    <button onclick="spin('canh')">Món canh</button>
+    <div id="result-canh" class="result"></div>
+  </div>
+
+  <div id="history">
+    <h3>Lịch sử quay</h3>
+    <ul id="history-list"></ul>
+  </div>
+
+  <button id="refresh-btn" onclick="refresh()">Làm mới</button>
 
   <script>
     const data = {
@@ -90,7 +118,7 @@
         "Nấm đùi gà xào thịt băm",
         "Nấm kho tiêu với thịt băm",
         "Trứng hấp thịt băm và nấm",
-        "Nấm xào bơ tỏi (ăn chay hoặc ăn kèm món mặn khác)",
+        "Nấm xào bơ tỏi",
         "Thịt băm rang sả ớt",
         "Thịt băm rim nước mắm tỏi",
         "Trứng chiên thịt băm",
@@ -115,11 +143,56 @@
       ]
     };
 
+    const historyList = document.getElementById("history-list");
+
     function spin(type) {
-      const items = data[type];
-      const result = items[Math.floor(Math.random() * items.length)];
+      if (data[type].length === 0) {
+        alert(`Không còn món ${type} nào để quay! Vui lòng làm mới.`);
+        return;
+      }
+      const index = Math.floor(Math.random() * data[type].length);
+      const result = data[type][index];
       document.getElementById("result-" + type).innerText = "👉 " + result;
+
+      // Loại món đã chọn khỏi danh sách để không lặp lại
+      data[type].splice(index, 1);
+
+      // Lấy ngày hôm nay + 1 ngày
+      const now = new Date();
+      now.setDate(now.getDate() + 1);
+      const formattedDate = now.toLocaleDateString('vi-VN');
+
+      // Ghi vào lịch sử
+      const li = document.createElement("li");
+      li.textContent = `Thực đơn cho ngày mai (${formattedDate}): ${result}`;
+      historyList.appendChild(li);
     }
-  </script>
-</body>
-</html>
+
+    function refresh() {
+      // Khởi tạo lại dữ liệu
+      data["mặn"] = [
+        "Đậu phụ sốt cà chua",
+        "Đậu phụ nhồi thịt băm hấp hoặc sốt",
+        "Đậu phụ kho nấm đông cô",
+        "Đậu phụ chiên giòn chấm nước tương",
+        "Đậu phụ rim mặn ngọt",
+        "Đậu phụ xào nấm và hành lá",
+        "Thịt băm xào nấm hương",
+        "Nấm đùi gà xào thịt băm",
+        "Nấm kho tiêu với thịt băm",
+        "Trứng hấp thịt băm và nấm",
+        "Nấm xào bơ tỏi",
+        "Thịt băm rang sả ớt",
+        "Thịt băm rim nước mắm tỏi",
+        "Trứng chiên thịt băm",
+        "Thịt băm xào đậu que",
+        "Thịt băm xào su su / cà rốt",
+        "Bầu nhồi thịt băm sốt nước tương",
+        "Ruốc nấm"
+      ];
+      data["canh"] = [
+        "Canh nấm rơm nấu thịt băm",
+        "Canh nấm kim châm thịt băm",
+        "Canh bí đỏ thịt băm",
+        "Canh cải bó xôi nấu thịt băm",
+        "Canh
