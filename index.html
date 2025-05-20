@@ -2,8 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Vòng quay món ăn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vòng quay món ăn</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -15,23 +15,21 @@
       background-position: center;
       color: white;
       min-height: 100vh;
+      margin: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
-
     h1 {
       background-color: rgba(0, 0, 0, 0.6);
       padding: 10px;
       border-radius: 10px;
       display: inline-block;
-      margin-bottom: 20px;
     }
-
     button {
       font-size: 18px;
       padding: 10px 20px;
-      margin: 10px 15px;
+      margin: 10px;
       border: none;
       border-radius: 8px;
       background-color: #ff9800;
@@ -39,188 +37,246 @@
       cursor: pointer;
       min-width: 120px;
     }
-
     button:hover {
       background-color: #f57c00;
     }
-
     .result {
-      font-size: 20px;
-      margin-top: 10px;
+      font-size: 24px;
+      margin-top: 20px;
       background-color: rgba(0, 0, 0, 0.5);
       display: inline-block;
       padding: 10px 20px;
       border-radius: 10px;
       min-width: 280px;
       min-height: 40px;
+      line-height: 40px;
     }
-
-    .controls {
-      margin-top: 15px;
-    }
-
     #history {
-      margin-top: 30px;
+      max-width: 600px;
+      margin: 30px auto 0;
       background-color: rgba(0,0,0,0.5);
-      max-width: 450px;
-      margin-left: auto;
-      margin-right: auto;
       padding: 15px;
       border-radius: 10px;
       text-align: left;
-      max-height: 200px;
+      color: #fff;
       overflow-y: auto;
-      font-size: 16px;
+      max-height: 200px;
     }
-
-    #reset-btn {
+    #history ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+    #refreshBtn {
       position: fixed;
-      bottom: 10px;
-      right: 10px;
-      font-size: 12px;
-      padding: 6px 12px;
-      background-color: #444;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
+      bottom: 15px;
+      right: 15px;
+      background-color: #555;
+      font-size: 14px;
+      padding: 6px 10px;
+      border-radius: 5px;
+      min-width: auto;
       opacity: 0.7;
-      transition: opacity 0.3s ease;
-      z-index: 999;
+      transition: opacity 0.3s;
     }
-
-    #reset-btn:hover {
+    #refreshBtn:hover {
       opacity: 1;
     }
-
+    #saveBtn {
+      background-color: #4caf50;
+      min-width: 140px;
+    }
+    #saveBtn:hover {
+      background-color: #388e3c;
+    }
+    @media (max-width: 480px) {
+      .result {
+        min-width: 90vw;
+        font-size: 20px;
+      }
+      button {
+        min-width: 90vw;
+        font-size: 20px;
+      }
+      #history {
+        max-width: 90vw;
+      }
+    }
   </style>
 </head>
 <body>
-
   <h1>🎯 Vòng quay món ăn 🎯</h1>
 
   <div>
     <button onclick="spin('mặn')">Món mặn</button>
-    <div id="result-mặn" class="result">Chưa chọn</div>
+    <div id="result-mặn" class="result"></div>
   </div>
 
   <div>
     <button onclick="spin('canh')">Món canh</button>
-    <div id="result-canh" class="result">Chưa chọn</div>
+    <div id="result-canh" class="result"></div>
   </div>
 
-  <div class="controls">
-    <button id="save-btn" onclick="saveMenu()">💾 Lưu thực đơn cho ngày mai</button>
+  <div>
+    <button id="saveBtn" onclick="saveMenu()">Lưu thực đơn cho ngày mai</button>
   </div>
 
   <div id="history">
-    <strong>Lịch sử chọn món:</strong>
-    <div id="history-list"></div>
+    <h3>Lịch sử thực đơn đã lưu</h3>
+    <ul id="historyList">
+      <li>Chưa có thực đơn nào được lưu.</li>
+    </ul>
   </div>
 
-  <button id="reset-btn" onclick="resetAll()">Làm mới</button>
+  <button id="refreshBtn" onclick="resetAll()">Làm mới</button>
 
-<script>
-  const data = {
-    "mặn": [
-      "Đậu phụ sốt cà chua",
-      "Đậu phụ nhồi thịt băm hấp hoặc sốt",
-      "Đậu phụ kho nấm đông cô",
-      "Đậu phụ chiên giòn chấm nước tương",
-      "Đậu phụ rim mặn ngọt",
-      "Đậu phụ xào nấm và hành lá",
-      "Thịt băm xào nấm hương",
-      "Nấm đùi gà xào thịt băm",
-      "Nấm kho tiêu với thịt băm",
-      "Trứng hấp thịt băm và nấm",
-      "Nấm xào bơ tỏi (ăn chay hoặc ăn kèm món mặn khác)",
-      "Thịt băm rang sả ớt",
-      "Thịt băm rim nước mắm tỏi",
-      "Trứng chiên thịt băm",
-      "Thịt băm xào đậu que",
-      "Thịt băm xào su su / cà rốt",
-      "Bầu nhồi thịt băm sốt nước tương",
-      "Ruốc nấm"
-    ],
-    "canh": [
-      "Canh nấm rơm nấu thịt băm",
-      "Canh nấm kim châm thịt băm",
-      "Canh bí đỏ thịt băm",
-      "Canh cải bó xôi nấu thịt băm",
-      "Canh cải ngọt thịt băm",
-      "Canh cải thảo thịt băm",
-      "Canh mồng tơi nấu tôm khô (hoặc thịt băm)",
-      "Canh rong biển thịt băm và đậu phụ",
-      "Canh bí xanh nhồi thịt băm",
-      "Canh đậu phụ non và thịt băm",
-      "Canh củ cải trắng nấu thịt băm",
-      "Canh nấm đùi gà nấu rau cải"
-    ]
-  };
+  <script>
+    const data = {
+      "mặn": [
+        "Đậu phụ sốt cà chua",
+        "Đậu phụ nhồi thịt băm hấp hoặc sốt",
+        "Đậu phụ kho nấm đông cô",
+        "Đậu phụ chiên giòn chấm nước tương",
+        "Đậu phụ rim mặn ngọt",
+        "Đậu phụ xào nấm và hành lá",
+        "Thịt băm xào nấm hương",
+        "Nấm đùi gà xào thịt băm",
+        "Nấm kho tiêu với thịt băm",
+        "Trứng hấp thịt băm và nấm",
+        "Nấm xào bơ tỏi",
+        "Thịt băm rang sả ớt",
+        "Thịt băm rim nước mắm tỏi",
+        "Trứng chiên thịt băm",
+        "Thịt băm xào đậu que",
+        "Thịt băm xào su su / cà rốt",
+        "Bầu nhồi thịt băm sốt nước tương",
+        "Ruốc nấm"
+      ],
+      "canh": [
+        "Canh nấm rơm nấu thịt băm",
+        "Canh nấm kim châm thịt băm",
+        "Canh bí đỏ thịt băm",
+        "Canh cải bó xôi nấu thịt băm",
+        "Canh cải ngọt thịt băm",
+        "Canh cải thảo thịt băm",
+        "Canh mồng tơi nấu tôm khô (hoặc thịt băm)",
+        "Canh rong biển thịt băm và đậu phụ",
+        "Canh bí xanh nhồi thịt băm",
+        "Canh đậu phụ non và thịt băm",
+        "Canh củ cải trắng nấu thịt băm",
+        "Canh nấm đùi gà nấu rau cải"
+      ]
+    };
 
-  let selected = {
-    "mặn": null,
-    "canh": null
-  };
+    let selected = { "mặn": undefined, "canh": undefined };
+    let filteredData = { "mặn": [...data["mặn"]], "canh": [...data["canh"]] };
+    let baseDate = null; // ngày bắt đầu lưu lịch sử
 
-  // Đếm ngày đã lưu, bắt đầu từ 1
-  let dayOffset = 1;
+    function spin(type) {
+      if (filteredData[type].length === 0) {
+        alert(`Không còn món ${type} để quay!`);
+        return;
+      }
+      const items = filteredData[type];
+      const result = items[Math.floor(Math.random() * items.length)];
+      selected[type] = result;
+      document.getElementById("result-" + type).innerText = "👉 " + result;
 
-  function spin(type) {
-    const items = data[type];
-    if (items.length === 0) {
-      alert("Đã chọn hết món " + type + " rồi!");
-      return;
+      // Loại bỏ món vừa chọn khỏi danh sách để không chọn lại
+      filteredData[type] = filteredData[type].filter(i => i !== result);
     }
-    const idx = Math.floor(Math.random() * items.length);
-    const result = items[idx];
-    selected[type] = result;
-    document.getElementById("result-" + type).innerText = "👉 " + result;
-  }
 
-  function saveMenu() {
-    if (!selected["mặn"] || !selected["canh"]) {
-      alert("Vui lòng chọn cả món mặn và món canh trước khi lưu.");
-      return;
+    function formatDateWithWeekday(dateString) {
+      const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+      const d = new Date(dateString);
+      const weekday = days[d.getDay()];
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${weekday}, ${day}/${month}/${year}`;
     }
-    const today = new Date();
-    // Tính ngày + offset
-    const targetDate = new Date(today);
-    targetDate.setDate(today.getDate() + dayOffset);
 
-    // Định dạng ngày dd/mm/yyyy
-    const dd = String(targetDate.getDate()).padStart(2, '0');
-    const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
-    const yyyy = targetDate.getFullYear();
-    const formattedDate = `${dd}/${mm}/${yyyy}`;
+    function loadHistory() {
+      const raw = localStorage.getItem("menuHistory");
+      return raw ? JSON.parse(raw) : [];
+    }
 
-    const text = `Em Mia Iu chọn món: ${selected["mặn"]}, ${selected["canh"]} cho ngày ${formattedDate}`;
-    const historyList = document.getElementById("history-list");
+    function saveHistory(history) {
+      localStorage.setItem("menuHistory", JSON.stringify(history));
+    }
 
-    // Thêm vào lịch sử
-    const p = document.createElement("p");
-    p.innerText = text;
-    historyList.appendChild(p);
+    function renderHistory() {
+      const history = loadHistory();
+      const ul = document.getElementById("historyList");
+      ul.innerHTML = "";
+      if (history.length === 0) {
+        ul.innerHTML = "<li>Chưa có thực đơn nào được lưu.</li>";
+        return;
+      }
+      history.forEach(item => {
+        if (!item.monMan || !item.monCanh) return;
+        const li = document.createElement("li");
+        li.textContent = `${formatDateWithWeekday(item.date)} - Em Mia Iu chọn món: Món mặn: ${item.monMan}; Món canh: ${item.monCanh}`;
+        ul.appendChild(li);
+      });
+    }
 
-    // Tăng ngày offset lên 1 cho lần tiếp theo
-    dayOffset++;
+    function saveMenu() {
+      if (!selected["mặn"] || !selected["canh"]) {
+        alert("Vui lòng chọn cả món mặn và món canh trước khi lưu!");
+        return;
+      }
+      let history = loadHistory();
 
-    // Reset chọn món để chọn món tiếp
-    selected["mặn"] = null;
-    selected["canh"] = null;
-    document.getElementById("result-mặn").innerText = "Chưa chọn";
-    document.getElementById("result-canh").innerText = "Chưa chọn";
-  }
+      // Nếu chưa có lịch sử, lấy ngày hiện tại +1 ngày, ngược lại lấy ngày lớn nhất +1
+      if (!baseDate) {
+        const now = new Date();
+        baseDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      } else {
+        baseDate = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + 1);
+      }
 
-  function resetAll() {
-    // Reset ngày offset, xóa lịch sử, reset chọn món
-    dayOffset = 1;
-    selected["mặn"] = null;
-    selected["canh"] = null;
-    document.getElementById("result-mặn").innerText = "Chưa chọn";
-    document.getElementById("result-canh").innerText = "Chưa chọn";
-    document.getElementById("history-list").innerHTML = "";
-  }
-</script>
+      const dateStr = baseDate.toISOString().slice(0, 10);
 
+      history.push({
+        date: dateStr,
+        monMan: selected["mặn"],
+        monCanh: selected["canh"]
+      });
+
+      saveHistory(history);
+
+      // Reset danh sách món quay lại đủ để chọn tiếp
+      filteredData = { "mặn": [...data["mặn"]], "canh": [...data["canh"]] };
+      selected = { "mặn": undefined, "canh": undefined };
+      document.getElementById("result-mặn").innerText = "";
+      document.getElementById("result-canh").innerText = "";
+
+      renderHistory();
+      alert("Đã lưu thực đơn cho " + formatDateWithWeekday(dateStr));
+    }
+
+    function resetAll() {
+      if (confirm("Bạn có chắc muốn làm mới và xóa lịch sử?")) {
+        localStorage.removeItem("menuHistory");
+        filteredData = { "mặn": [...data["mặn"]], "canh": [...data["canh"]] };
+        selected = { "mặn": undefined, "canh": undefined };
+        baseDate = null;
+        document.getElementById("result-mặn").innerText = "";
+        document.getElementById("result-canh").innerText = "";
+        renderHistory();
+      }
+    }
+
+    window.onload = function () {
+      renderHistory();
+
+      // Thiết lập baseDate theo lịch sử để không bị reset ngày
+      const history = loadHistory();
+      if (history.length > 0) {
+        const lastDate = history[history.length - 1].date;
+        baseDate = new Date(lastDate);
+      }
+    };
+  </script>
 </body>
 </html>
