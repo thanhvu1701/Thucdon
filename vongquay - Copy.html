@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vòng quay món ăn</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-image: url("https://images.unsplash.com/photo-1604908554160-6cacc6b8efb1?auto=format&fit=crop&w=1350&q=80");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      text-shadow: 1px 1px 5px black;
+      font-size: 6vw;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    select, button {
+      font-size: 5vw;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .result {
+      font-size: 5.5vw;
+      margin-top: 20px;
+      text-shadow: 2px 2px 5px black;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vòng quay món ăn</h1>
+  <select id="monMan">
+    <option>Đậu phụ sốt cà chua</option>
+    <option>Đậu phụ nhồi thịt băm hấp hoặc sốt</option>
+    <option>Đậu phụ kho nấm đông cô</option>
+    <option>Đậu phụ chiên giòn chấm nước tương</option>
+    <option>Đậu phụ rim mặn ngọt</option>
+    <option>Đậu phụ xào nấm và hành lá</option>
+    <option>Thịt băm xào nấm hương</option>
+    <option>Nấm đùi gà xào thịt băm</option>
+    <option>Nấm kho tiêu với thịt băm</option>
+    <option>Trứng hấp thịt băm và nấm</option>
+    <option>Nấm xào bơ tỏi</option>
+    <option>Thịt băm rang sả ớt</option>
+    <option>Thịt băm rim nước mắm tỏi</option>
+    <option>Trứng chiên thịt băm</option>
+    <option>Thịt băm xào đậu que</option>
+    <option>Thịt băm xào su su / cà rốt</option>
+    <option>Bầu nhồi thịt băm sốt nước tương</option>
+    <option>Ruốc nấm</option>
+  </select>
+
+  <select id="monCanh">
+    <option>Canh nấm rơm nấu thịt băm</option>
+    <option>Canh nấm kim châm thịt băm</option>
+    <option>Canh bí đỏ thịt băm</option>
+    <option>Canh cải bó xôi nấu thịt băm</option>
+    <option>Canh cải ngọt thịt băm</option>
+    <option>Canh cải thảo thịt băm</option>
+    <option>Canh mồng tơi nấu tôm khô</option>
+    <option>Canh rong biển thịt băm và đậu phụ</option>
+    <option>Canh bí xanh nhồi thịt băm</option>
+    <option>Canh đậu phụ non và thịt băm</option>
+    <option>Canh củ cải trắng nấu thịt băm</option>
+    <option>Canh nấm đùi gà nấu rau cải</option>
+  </select>
+
+  <br />
+  <button onclick="quay()">🎯 Quay món hôm nay</button>
+  <div class="result" id="ketQua"></div>
+
+  <script>
+    function quay() {
+      const monMan = document.getElementById("monMan");
+      const monCanh = document.getElementById("monCanh");
+      const kq = document.getElementById("ketQua");
+
+      const randomMan = monMan.options[Math.floor(Math.random() * monMan.options.length)].text;
+      const randomCanh = monCanh.options[Math.floor(Math.random() * monCanh.options.length)].text;
+
+      kq.innerHTML = `🍛 Món mặn: <strong>${randomMan}</strong><br>🥣 Món canh: <strong>${randomCanh}</strong>`;
+    }
+  </script>
+</body>
+</html>
