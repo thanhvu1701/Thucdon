@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vòng quay món ăn</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-image: url('https://cdn.tgdd.vn/2021/06/CookProduct/BeFunky-collage-1200x676-2.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: white;
+    }
+
+    h1 {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 10px;
+      display: inline-block;
+      font-size: 6vw;
+    }
+
+    button {
+      font-size: 5vw;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff9800;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f57c00;
+    }
+
+    .result {
+      font-size: 5vw;
+      margin-top: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+
+    @media (min-width: 768px) {
+      h1 { font-size: 32px; }
+      button { font-size: 20px; }
+      .result { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Vòng quay món ăn 🎯</h1>
+
+  <div>
+    <button onclick="spin('mặn')">Món mặn</button>
+    <div id="result-mặn" class="result"></div>
+  </div>
+
+  <div>
+    <button onclick="spin('canh')">Món canh</button>
+    <div id="result-canh" class="result"></div>
+  </div>
+
+  <script>
+    const data = {
+      "mặn": [
+        "Đậu phụ sốt cà chua",
+        "Đậu phụ nhồi thịt băm hấp hoặc sốt",
+        "Đậu phụ kho nấm đông cô",
+        "Đậu phụ chiên giòn chấm nước tương",
+        "Đậu phụ rim mặn ngọt",
+        "Đậu phụ xào nấm và hành lá",
+        "Thịt băm xào nấm hương",
+        "Nấm đùi gà xào thịt băm",
+        "Nấm kho tiêu với thịt băm",
+        "Trứng hấp thịt băm và nấm",
+        "Nấm xào bơ tỏi (ăn chay hoặc ăn kèm món mặn khác)",
+        "Thịt băm rang sả ớt",
+        "Thịt băm rim nước mắm tỏi",
+        "Trứng chiên thịt băm",
+        "Thịt băm xào đậu que",
+        "Thịt băm xào su su / cà rốt",
+        "Bầu nhồi thịt băm sốt nước tương",
+        "Ruốc nấm"
+      ],
+      "canh": [
+        "Canh nấm rơm nấu thịt băm",
+        "Canh nấm kim châm thịt băm",
+        "Canh bí đỏ thịt băm",
+        "Canh cải bó xôi nấu thịt băm",
+        "Canh cải ngọt thịt băm",
+        "Canh cải thảo thịt băm",
+        "Canh mồng tơi nấu tôm khô (hoặc thịt băm)",
+        "Canh rong biển thịt băm và đậu phụ",
+        "Canh bí xanh nhồi thịt băm",
+        "Canh đậu phụ non và thịt băm",
+        "Canh củ cải trắng nấu thịt băm",
+        "Canh nấm đùi gà nấu rau cải"
+      ]
+    };
+
+    function spin(type) {
+      const items = data[type];
+      const result = items[Math.floor(Math.random() * items.length)];
+      document.getElementById("result-" + type).innerText = "👉 " + result;
+    }
+  </script>
+</body>
+</html>
