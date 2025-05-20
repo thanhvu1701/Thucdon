@@ -190,7 +190,7 @@
       history.forEach(item => {
         if (!item.monMan || !item.monCanh) return;
         const li = document.createElement("li");
-        li.textContent = `${formatDate(item.date)} - Em Mia Iu chọn món: Món mặn: ${item.monMan}; Món canh: ${item.monCanh}`;
+        li.textContent = `${formatDate(item.date)} - Em Mia Iu chọn món:${item.monMan} và ${item.monCanh}`;
         ul.appendChild(li);
       });
     };
